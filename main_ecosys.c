@@ -17,9 +17,9 @@
 
 /* Parametres globaux de l'ecosysteme (externes dans le ecosys.h)*/
 float p_ch_dir = 0.01;
-float p_reproduce_proie = 0.4;
-float p_reproduce_predateur = 0.5;
-int temps_repousse_herbe = -15;
+float p_reproduce_proie = 0.08;
+float p_reproduce_predateur = 0.01;
+int temps_repousse_herbe = -2;
 
 // Parametres initiaux
 // float p_ch_dir = 0.01;
@@ -27,9 +27,9 @@ int temps_repousse_herbe = -15;
 // float p_reproduce_predateur = 0.5;
 // int temps_repousse_herbe = -15;
 
-int main(int argc, char** argv) {
+int main(void) {
     // Simulation
-    srand(1);
+    srand(time(NULL));
 
     Animal* proies = NULL;
     Animal* predateurs = NULL;
@@ -55,10 +55,10 @@ int main(int argc, char** argv) {
     int nb_proies = compte_animal_it(proies);
     int nb_predateurs = compte_animal_it(predateurs);
 
-    printf("%d\n", nb_proies);
     assert(nb_proies == NB_PROIES);
     assert(nb_predateurs == NB_PREDATEURS);
 
+    // boucle de simulation
     int i = 0;
     while (nb_proies > 0 && i < 500) {
         rafraichir_proies(&proies, monde);
@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
 
         fprintf(data, "%d %d %d\n", i + 1, nb_proies, nb_predateurs);
 
-        usleep(T_WAIT);
+        // usleep(T_WAIT);
         nb_proies = compte_animal_it(proies);
         nb_predateurs = compte_animal_it(predateurs);
         i++;

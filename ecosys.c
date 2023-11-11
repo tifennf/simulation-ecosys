@@ -11,6 +11,8 @@
 /* PARTIE 1*/
 /* Fourni: Part 1, exercice 4, question 2 */
 Animal* creer_animal(int x, int y, float energie) {
+    // Alloue de la mémoire pour un animal et retourne son adresse
+
     Animal* na = (Animal*)malloc(sizeof(Animal));
     assert(na);
     na->x = x;
@@ -165,7 +167,7 @@ void clear_screen() {
 // TD
 
 void write_animal(FILE* dest, Animal* liste_animal, char* type) {
-    // sérialise une liste d'animal
+    // sérialise une liste d'animal dans le fichier dest
     fprintf(dest, "<%s>\n", type);
     while (liste_animal) {
         fprintf(dest, "x=%d y=%d dir=[%d %d] e=%.2f\n", liste_animal->x,
@@ -204,6 +206,7 @@ void lire_ecosys(const char* nom_fichier, Animal** liste_predateur,
         line = fgets(buffer, BUFFER_SIZE, src);
     }
 
+    // sérialise chaque proie
     line = fgets(buffer, BUFFER_SIZE, src);
     while (strcmp(line, "</proies>\n")) {
         int x, y;
@@ -219,10 +222,10 @@ void lire_ecosys(const char* nom_fichier, Animal** liste_predateur,
 
     // cherche le début du bloc prédateurs
     while (strcmp(line, "<predateurs>\n")) {
-        /* code */
         line = fgets(buffer, BUFFER_SIZE, src);
     }
 
+    // sérialise chaque prédateur
     line = fgets(buffer, BUFFER_SIZE, src);
     while (strcmp(line, "</predateurs>\n")) {
 
@@ -374,6 +377,8 @@ void rafraichir_predateurs(Animal** liste_predateur, Animal** liste_proie) {
 
 /* Part 2. Exercice 5, question 2 */
 void rafraichir_monde(int monde[SIZE_X][SIZE_Y]) {
+    // Fait pousser de l'herbe
+
     for (size_t i = 0; i < SIZE_X; i++) {
         for (size_t j = 0; j < SIZE_Y; j++) {
             monde[i][j] += 1;
