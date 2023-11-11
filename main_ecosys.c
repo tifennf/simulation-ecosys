@@ -29,45 +29,9 @@ int temps_repousse_herbe = -15;
 
 int main(int argc, char** argv) {
 
-    /* A completer. Part 2:
-     * exercice 4, questions 2 et 4
-     * exercice 6, question 2
-     * exercice 7, question 3
-     * exercice 8, question 1
-     */
-
-    // test déplacement taure
-    Animal* a = creer_animal(0, 0, 10.0);
-    a->dir[0] = 1;
-    a->dir[1] = 1;
-    bouger_animaux(a);
-    assert(a->x == SIZE_X - 1);
-    assert(a->y == SIZE_Y - 1);
-    a->dir[0] = -1;
-    a->dir[1] = -1;
-    bouger_animaux(a);
-    assert(a->x == 0);
-    assert(a->y == 0);
-
-    a = liberer_liste_animaux(a);
-
-    // test reproduction
+    // Simulation
     Animal* proies = NULL;
     Animal* predateurs = NULL;
-    lire_ecosys("ecosys.txt", &predateurs, &proies);
-    reproduce(&proies, 1);
-
-    assert(compte_animal_it(proies) == 40);
-    assert(compte_animal_it(predateurs) == 20);
-
-    afficher_ecosys(predateurs, proies);
-
-    proies = liberer_liste_animaux(proies);
-    predateurs = liberer_liste_animaux(predateurs);
-
-    clear_screen();
-
-    // Simulation
 
     int monde[SIZE_X][SIZE_Y];
 
