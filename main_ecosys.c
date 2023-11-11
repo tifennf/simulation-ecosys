@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 #define NB_PROIES 20
-#define NB_PREDATEURS 1
+#define NB_PREDATEURS 20
 #define T_WAIT 400000
 
 /* Parametres globaux de l'ecosysteme (externes dans le ecosys.h)*/
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
     assert(nb_predateurs == 20);
 
     int i = 0;
-    while (nb_proies > 0 && i < 1000) {
+    while (nb_proies > 0 && i < 500) {
         // clear_screen();
         rafraichir_proies(&proies, monde);
         rafraichir_predateurs(&predateurs, &proies);
@@ -107,5 +107,7 @@ int main(int argc, char** argv) {
 
     fclose(data);
 
+    proies = liberer_liste_animaux(proies);
+    predateurs = liberer_liste_animaux(predateurs);
     return 0;
 }

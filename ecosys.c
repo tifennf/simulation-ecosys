@@ -273,43 +273,51 @@ void bouger_animaux(Animal* la) {
 
 /* Part 2. Exercice 4, question 3 */
 void reproduce(Animal** liste_animal, float p_reproduce) {
-    // fait reproduire tous les animaux en fonction d'un facteur chance
+    // Fait reproduire tous les animaux en fonction d'un facteur chance
+
     Animal* current = *liste_animal;
     float r = (float)(rand()) / RAND_MAX;
 
     while (current) {
 
         if (r < p_reproduce) {
-            ajouter_animal(current->x, current->y, current->energie,
-                           liste_animal);
-            current->energie = current->energie / 2;
+            float new_e = current->energie / 2;
+            ajouter_animal(current->x, current->y, new_e, liste_animal);
+            current->energie = new_e;
         }
 
         current = current->suivant;
     }
 }
 
+void proies_work(Animal* current, int monde[SIZE_X][SIZE_Y]) {
+    // La proie va manger de l'herbe si il y en a sur sa case
+
+    int grass = monde[current->x][current->y];
+
+    if (grass >= 0) {
+        current->energie += grass;
+        monde[current->x][current->y] = temps_repousse_herbe;
+    }
+}
+
 /* Part 2. Exercice 6, question 1 */
 void rafraichir_proies(Animal** liste_proie, int monde[SIZE_X][SIZE_Y]) {
-    /*A Completer*/
+    // Fait mourir une proie si elle n'a plus d'énergie, sinon elle travaille
+
     Animal* current = *liste_proie;
     bouger_animaux(current);
+
     while (current) {
         current->energie -= 1.0;
 
+        Animal* tmp = current->suivant;
         if (current->energie <= 0.0) {
             enlever_animal(liste_proie, current);
         } else {
-
-            int grass = monde[current->x][current->y];
-
-            if (grass >= 0) {
-                current->energie += grass;
-                monde[current->x][current->y] = temps_repousse_herbe;
-            }
+            proies_work(current, monde);
         }
-
-        current = current->suivant;
+        current = tmp;
     }
 
     reproduce(liste_proie, p_reproduce_proie);
@@ -317,7 +325,8 @@ void rafraichir_proies(Animal** liste_proie, int monde[SIZE_X][SIZE_Y]) {
 
 /* Part 2. Exercice 7, question 1 */
 Animal* animal_en_XY(Animal* l, int x, int y) {
-    /*A Completer*/
+    // Si un animal est présent en (x,y), alors son adresse est retournée
+
     while (l) {
         if (l->x == x && l->y == y) {
             return l;
@@ -329,28 +338,35 @@ Animal* animal_en_XY(Animal* l, int x, int y) {
     return NULL;
 }
 
+void predateurs_work(Animal* predateur, Animal** liste_proie) {
+    // Le prédateur va manger une proie si il y en a une sur sa case
+
+    Animal* proie = animal_en_XY(*liste_proie, predateur->x, predateur->y);
+
+    if (proie) {
+        predateur->energie += proie->energie;
+        enlever_animal(liste_proie, proie);
+    }
+}
+
 /* Part 2. Exercice 7, question 2 */
 void rafraichir_predateurs(Animal** liste_predateur, Animal** liste_proie) {
-    /*A Completer*/
+    // Fait mourir un prédateur si il n'a plus d'énergies, sinon il travaille
 
     Animal* current = *liste_predateur;
     bouger_animaux(current);
+
     while (current) {
         current->energie -= 1.0;
 
+        Animal* tmp = current->suivant;
         if (current->energie <= 0.0) {
             enlever_animal(liste_predateur, current);
         } else {
-
-            Animal* meat = animal_en_XY(*liste_proie, current->x, current->y);
-
-            if (meat) {
-                current->energie += meat->energie;
-                enlever_animal(liste_proie, meat);
-            }
+            predateurs_work(current, liste_proie);
         }
 
-        current = current->suivant;
+        current = tmp;
     }
 
     reproduce(liste_predateur, p_reproduce_predateur);

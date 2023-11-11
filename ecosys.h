@@ -48,4 +48,7 @@ void lire_ecosys(const char* nom_fichier, Animal** liste_predateur,
                  Animal** liste_proie);
 void reproduce(Animal** liste_animal, float p_reproduce);
 
+void proies_work(Animal* proie, int monde[SIZE_X][SIZE_Y]);
+void predateurs_work(Animal* predateur, Animal** liste_proie);
+
 #endif
