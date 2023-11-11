@@ -13,7 +13,7 @@
 
 #define NB_PROIES 20
 #define NB_PREDATEURS 20
-#define T_WAIT 400000
+#define T_WAIT 40000
 
 /* Parametres globaux de l'ecosysteme (externes dans le ecosys.h)*/
 float p_ch_dir = 0.01;
@@ -28,32 +28,39 @@ int temps_repousse_herbe = -15;
 // int temps_repousse_herbe = -15;
 
 int main(int argc, char** argv) {
-
     // Simulation
+    srand(1);
+
     Animal* proies = NULL;
     Animal* predateurs = NULL;
+    float energie = 10.0;
+
+    for (size_t i = 0; i < NB_PROIES; i++) {
+        ajouter_animal(rand() % SIZE_X, rand() % SIZE_Y, energie, &proies);
+    }
+    for (size_t i = 0; i < NB_PREDATEURS; i++) {
+        ajouter_animal(rand() % SIZE_X, rand() % SIZE_Y, energie, &predateurs);
+    }
 
     int monde[SIZE_X][SIZE_Y];
-
     for (size_t i = 0; i < SIZE_X; i++) {
         for (size_t j = 0; j < SIZE_Y; j++) {
             monde[i][j] = 0;
         }
     }
 
-    lire_ecosys("ecosys.txt", &predateurs, &proies);
-
     FILE* data = fopen("Evol_Pop.txt", "w");
     assert(data);
 
     int nb_proies = compte_animal_it(proies);
     int nb_predateurs = compte_animal_it(predateurs);
-    assert(nb_proies == 20);
-    assert(nb_predateurs == 20);
+
+    printf("%d\n", nb_proies);
+    assert(nb_proies == NB_PROIES);
+    assert(nb_predateurs == NB_PREDATEURS);
 
     int i = 0;
     while (nb_proies > 0 && i < 500) {
-        // clear_screen();
         rafraichir_proies(&proies, monde);
         rafraichir_predateurs(&predateurs, &proies);
         rafraichir_monde(monde);
@@ -63,7 +70,7 @@ int main(int argc, char** argv) {
 
         fprintf(data, "%d %d %d\n", i + 1, nb_proies, nb_predateurs);
 
-        // usleep(T_WAIT);
+        usleep(T_WAIT);
         nb_proies = compte_animal_it(proies);
         nb_predateurs = compte_animal_it(predateurs);
         i++;
