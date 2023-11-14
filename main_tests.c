@@ -2,13 +2,17 @@
 // FABRICI Tifenn
 // Intensif
 
+#include "ecosys.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
-#include "ecosys.h"
+float p_ch_dir = 0;
+float p_reproduce_proie = 0.5;
+float p_reproduce_predateur = 0.4;
+int temps_repousse_herbe = 15;
 
 int main(void) {
     Animal* liste_proie = NULL;
@@ -40,6 +44,9 @@ int main(void) {
     liste_predateur = a5;
 
     afficher_ecosys(liste_proie, liste_predateur);
+
+    liberer_liste_animaux(liste_proie);
+    liberer_liste_animaux(liste_predateur);
 
     return 0;
 }

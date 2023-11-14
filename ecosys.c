@@ -8,11 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PARTIE 1*/
-/* Fourni: Part 1, exercice 4, question 2 */
 Animal* creer_animal(int x, int y, float energie) {
     // Alloue de la mémoire pour un animal et retourne son adresse
-
     Animal* na = (Animal*)malloc(sizeof(Animal));
     assert(na);
     na->x = x;
@@ -24,7 +21,6 @@ Animal* creer_animal(int x, int y, float energie) {
     return na;
 }
 
-/* Fourni: Part 1, exercice 4, question 3 */
 Animal* ajouter_en_tete_animal(Animal* liste, Animal* animal) {
     assert(animal);
     assert(!animal->suivant);
@@ -32,13 +28,11 @@ Animal* ajouter_en_tete_animal(Animal* liste, Animal* animal) {
     return animal;
 }
 
-/* A faire. Part 1, exercice 6, question 2 */
 void ajouter_animal(int x, int y, float energie, Animal** liste_animal) {
     // Créer un animal puis l'ajoute en tête de liste
     assert(x >= 0 && x < SIZE_X && y >= 0 && y < SIZE_Y);
 
     Animal* a = creer_animal(x, y, energie);
-
     assert(a);
 
     *liste_animal = ajouter_en_tete_animal(*liste_animal, a);
@@ -47,11 +41,14 @@ void ajouter_animal(int x, int y, float energie, Animal** liste_animal) {
 /* A Faire. Part 1, exercice 5, question 5 */
 void enlever_animal(Animal** liste, Animal* animal) {
     // suprime un animal de la liste en comparant son adresse
-    Animal* tmp;
+    assert(liste && *liste);
+    assert(animal);
 
+    Animal* tmp;
     Animal* current = *liste;
     Animal* pred = current;
 
+    // on regarde pour le premier animal de la liste
     if (current == animal) {
         tmp = current->suivant;
         free(current);
@@ -59,6 +56,7 @@ void enlever_animal(Animal** liste, Animal* animal) {
         return;
     }
 
+    // sinon on cherche dans la liste
     while (current) {
         if (current == animal) {
             tmp = current->suivant;
@@ -74,9 +72,10 @@ void enlever_animal(Animal** liste, Animal* animal) {
     return;
 }
 
-/* A Faire. Part 1, exercice 6, question 7 */
 Animal* liberer_liste_animaux(Animal* liste) {
-    // libère la mémoire allouée pour une liste d'animaux
+    // libère la mémoire allouée d'une liste d'animaux
+    assert(liste);
+
     Animal* tmp;
     while (liste) {
         tmp = liste->suivant;
@@ -164,11 +163,13 @@ void clear_screen() {
     printf("\x1b[2J\x1b[1;1H"); /* code ANSI X3.4 pour effacer l'ecran */
 }
 
-// TD
-
 void write_animal(FILE* dest, Animal* liste_animal, char* type) {
     // sérialise une liste d'animal dans le fichier dest
+    assert(dest);
+
+    // écriture de la balise ouvrante
     fprintf(dest, "<%s>\n", type);
+    // écriture des animaux
     while (liste_animal) {
         fprintf(dest, "x=%d y=%d dir=[%d %d] e=%.2f\n", liste_animal->x,
                 liste_animal->y, liste_animal->dir[0], liste_animal->dir[1],
@@ -176,6 +177,7 @@ void write_animal(FILE* dest, Animal* liste_animal, char* type) {
 
         liste_animal = liste_animal->suivant;
     }
+    // écriture de la balise fermante
     fprintf(dest, "</%s>\n", type);
 }
 
@@ -243,11 +245,9 @@ void lire_ecosys(const char* nom_fichier, Animal** liste_predateur,
     fclose(src);
 }
 
-/* PARTIE 2*/
-
-/* Part 2. Exercice 4, question 1 */
 void bouger_animaux(Animal* la) {
     // Bouge un animal en fonction de dir
+    assert(la);
 
     Animal* current = la;
     while (current) {
@@ -282,7 +282,6 @@ void reproduce(Animal** liste_animal, float p_reproduce) {
     float r = (float)(rand()) / RAND_MAX;
 
     while (current) {
-
         if (r < p_reproduce) {
             float new_e = current->energie / 2;
             ajouter_animal(current->x, current->y, new_e, liste_animal);
@@ -295,6 +294,8 @@ void reproduce(Animal** liste_animal, float p_reproduce) {
 
 void proies_work(Animal* current, int monde[SIZE_X][SIZE_Y]) {
     // La proie va manger de l'herbe si il y en a sur sa case
+    assert(current);
+    assert(monde);
 
     int grass = monde[current->x][current->y];
 
@@ -307,10 +308,13 @@ void proies_work(Animal* current, int monde[SIZE_X][SIZE_Y]) {
 /* Part 2. Exercice 6, question 1 */
 void rafraichir_proies(Animal** liste_proie, int monde[SIZE_X][SIZE_Y]) {
     // Fait mourir une proie si elle n'a plus d'énergie, sinon elle travaille
+    assert(liste_proie);
 
     Animal* current = *liste_proie;
     bouger_animaux(current);
 
+    // on actualise l'état des proies et on les fait agir
+    // si elles sont encore en vies
     while (current) {
         current->energie -= 1.0;
 
@@ -327,15 +331,16 @@ void rafraichir_proies(Animal** liste_proie, int monde[SIZE_X][SIZE_Y]) {
 }
 
 /* Part 2. Exercice 7, question 1 */
-Animal* animal_en_XY(Animal* l, int x, int y) {
+Animal* animal_en_XY(Animal* li, int x, int y) {
     // Si un animal est présent en (x,y), alors son adresse est retournée
+    assert(li);
 
-    while (l) {
-        if (l->x == x && l->y == y) {
-            return l;
+    while (li) {
+        if (li->x == x && li->y == y) {
+            return li;
         }
 
-        l = l->suivant;
+        li = li->suivant;
     }
 
     return NULL;
@@ -343,6 +348,8 @@ Animal* animal_en_XY(Animal* l, int x, int y) {
 
 void predateurs_work(Animal* predateur, Animal** liste_proie) {
     // Le prédateur va manger une proie si il y en a une sur sa case
+    assert(predateur);
+    assert(liste_proie && *liste_proie);
 
     Animal* proie = animal_en_XY(*liste_proie, predateur->x, predateur->y);
 
@@ -355,6 +362,8 @@ void predateurs_work(Animal* predateur, Animal** liste_proie) {
 /* Part 2. Exercice 7, question 2 */
 void rafraichir_predateurs(Animal** liste_predateur, Animal** liste_proie) {
     // Fait mourir un prédateur si il n'a plus d'énergies, sinon il travaille
+    assert(liste_predateur && *liste_predateur);
+    assert(liste_proie && *liste_proie);
 
     Animal* current = *liste_predateur;
     bouger_animaux(current);
@@ -378,6 +387,7 @@ void rafraichir_predateurs(Animal** liste_predateur, Animal** liste_proie) {
 /* Part 2. Exercice 5, question 2 */
 void rafraichir_monde(int monde[SIZE_X][SIZE_Y]) {
     // Fait pousser de l'herbe
+    assert(monde);
 
     for (size_t i = 0; i < SIZE_X; i++) {
         for (size_t j = 0; j < SIZE_Y; j++) {

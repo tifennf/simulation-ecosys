@@ -10,6 +10,11 @@
 
 #include "ecosys.h"
 
+float p_ch_dir = 0;
+float p_reproduce_proie = 0.5;
+float p_reproduce_predateur = 0.4;
+int temps_repousse_herbe = 15;
+
 int main() {
 
     Animal* liste_proie = NULL;
