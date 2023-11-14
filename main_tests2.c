@@ -43,7 +43,7 @@ int main() {
     afficher_ecosys(liste_predateur, liste_proie);
 
     // écriture test
-    ecrire_ecosys("ecosys.txt", liste_predateur, liste_proie);
+    ecrire_ecosys("./data/ecosys.txt", liste_predateur, liste_proie);
 
     // suppression test
     int i = 0;
@@ -64,7 +64,7 @@ int main() {
     // lecture test
     Animal* proies = NULL;
     Animal* predateurs = NULL;
-    lire_ecosys("ecosys.txt", &predateurs, &proies);
+    lire_ecosys("./data/ecosys.txt", &predateurs, &proies);
 
     assert(compte_animal_it(predateurs) == 20);
     assert(compte_animal_it(proies) == 20);

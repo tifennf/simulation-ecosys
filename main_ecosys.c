@@ -51,7 +51,7 @@ int main(void) {
         }
     }
 
-    FILE* data = fopen("Evol_Pop.txt", "w");
+    FILE* data = fopen("./data/Evol_Pop.txt", "w");
     assert(data);
 
     int nb_proies = compte_animal_it(proies);
@@ -83,7 +83,7 @@ int main(void) {
     proies = liberer_liste_animaux(proies);
     predateurs = liberer_liste_animaux(predateurs);
 
-    FILE* stats = fopen("Eco_Stats.txt", "a");
+    FILE* stats = fopen("./data/Eco_Stats.txt", "a");
     assert(stats);
 
     // récupère des données sur la fin de simulation
