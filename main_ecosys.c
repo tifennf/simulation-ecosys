@@ -13,6 +13,8 @@
 
 #define NB_PROIES 20
 #define NB_PREDATEURS 20
+#define E_PROIES 100.0
+#define E_PREDATEURS 75.0
 #define T_WAIT 40000
 
 /* Parametres globaux de l'ecosysteme (externes dans le ecosys.h)*/
@@ -33,13 +35,13 @@ int main(void) {
 
     Animal* proies = NULL;
     Animal* predateurs = NULL;
-    float energie = 10.0;
 
     for (size_t i = 0; i < NB_PROIES; i++) {
-        ajouter_animal(rand() % SIZE_X, rand() % SIZE_Y, energie, &proies);
+        ajouter_animal(rand() % SIZE_X, rand() % SIZE_Y, E_PROIES, &proies);
     }
     for (size_t i = 0; i < NB_PREDATEURS; i++) {
-        ajouter_animal(rand() % SIZE_X, rand() % SIZE_Y, energie, &predateurs);
+        ajouter_animal(rand() % SIZE_X, rand() % SIZE_Y, E_PREDATEURS,
+                       &predateurs);
     }
 
     int monde[SIZE_X][SIZE_Y];
@@ -80,5 +82,13 @@ int main(void) {
 
     proies = liberer_liste_animaux(proies);
     predateurs = liberer_liste_animaux(predateurs);
+
+    FILE* stats = fopen("Eco_Stats.txt", "a");
+    assert(stats);
+
+    // récupère des données sur la fin de simulation
+    fprintf(stats, "%d %d %d\n", i - 1, nb_proies, nb_predateurs);
+    fclose(stats);
+
     return 0;
 }

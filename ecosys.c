@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* PARTIE 1*/
+/* Fourni: Part 1, exercice 4, question 2 */
 Animal* creer_animal(int x, int y, float energie) {
     // Alloue de la mémoire pour un animal et retourne son adresse
     Animal* na = (Animal*)malloc(sizeof(Animal));
@@ -21,6 +23,7 @@ Animal* creer_animal(int x, int y, float energie) {
     return na;
 }
 
+/* Fourni: Part 1, exercice 4, question 3 */
 Animal* ajouter_en_tete_animal(Animal* liste, Animal* animal) {
     assert(animal);
     assert(!animal->suivant);
@@ -28,6 +31,7 @@ Animal* ajouter_en_tete_animal(Animal* liste, Animal* animal) {
     return animal;
 }
 
+/* A faire. Part 1, exercice 6, question 2 */
 void ajouter_animal(int x, int y, float energie, Animal** liste_animal) {
     // Créer un animal puis l'ajoute en tête de liste
     assert(x >= 0 && x < SIZE_X && y >= 0 && y < SIZE_Y);
@@ -72,9 +76,9 @@ void enlever_animal(Animal** liste, Animal* animal) {
     return;
 }
 
+/* A Faire. Part 1, exercice 6, question 7 */
 Animal* liberer_liste_animaux(Animal* liste) {
     // libère la mémoire allouée d'une liste d'animaux
-    assert(liste);
 
     Animal* tmp;
     while (liste) {
@@ -163,6 +167,8 @@ void clear_screen() {
     printf("\x1b[2J\x1b[1;1H"); /* code ANSI X3.4 pour effacer l'ecran */
 }
 
+// TD
+
 void write_animal(FILE* dest, Animal* liste_animal, char* type) {
     // sérialise une liste d'animal dans le fichier dest
     assert(dest);
@@ -197,6 +203,8 @@ void ecrire_ecosys(const char* nom_fichier, Animal* liste_predateur,
 void lire_ecosys(const char* nom_fichier, Animal** liste_predateur,
                  Animal** liste_proie) {
     // Déserialise les listes d'animaux
+    // Pre: le fichier est correctement formaté
+
     FILE* src = fopen(nom_fichier, "r");
     assert(src);
 
@@ -245,9 +253,10 @@ void lire_ecosys(const char* nom_fichier, Animal** liste_predateur,
     fclose(src);
 }
 
+/* PARTIE 2*/
+
 void bouger_animaux(Animal* la) {
     // Bouge un animal en fonction de dir
-    assert(la);
 
     Animal* current = la;
     while (current) {
@@ -333,7 +342,6 @@ void rafraichir_proies(Animal** liste_proie, int monde[SIZE_X][SIZE_Y]) {
 /* Part 2. Exercice 7, question 1 */
 Animal* animal_en_XY(Animal* li, int x, int y) {
     // Si un animal est présent en (x,y), alors son adresse est retournée
-    assert(li);
 
     while (li) {
         if (li->x == x && li->y == y) {
@@ -349,7 +357,7 @@ Animal* animal_en_XY(Animal* li, int x, int y) {
 void predateurs_work(Animal* predateur, Animal** liste_proie) {
     // Le prédateur va manger une proie si il y en a une sur sa case
     assert(predateur);
-    assert(liste_proie && *liste_proie);
+    assert(liste_proie);
 
     Animal* proie = animal_en_XY(*liste_proie, predateur->x, predateur->y);
 
@@ -362,8 +370,8 @@ void predateurs_work(Animal* predateur, Animal** liste_proie) {
 /* Part 2. Exercice 7, question 2 */
 void rafraichir_predateurs(Animal** liste_predateur, Animal** liste_proie) {
     // Fait mourir un prédateur si il n'a plus d'énergies, sinon il travaille
-    assert(liste_predateur && *liste_predateur);
-    assert(liste_proie && *liste_proie);
+    assert(liste_predateur);
+    assert(liste_proie);
 
     Animal* current = *liste_predateur;
     bouger_animaux(current);

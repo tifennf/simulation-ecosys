@@ -1,4 +1,4 @@
-# Projet C:
+# Projet C
 ## Simulation d'un écosystème
 
 Se placer dans la racine du projet au préalabre. <br>
